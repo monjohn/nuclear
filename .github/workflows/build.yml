@@ -1,0 +1,80 @@
+# Created with GitHubActions version 0.2.14
+name: build
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+on:
+  push:
+    branches: ["main"]
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  linux:
+    name: Build on Ubuntu (Elixir ${{ matrix.elixir }}, OTP ${{ matrix.otp }})
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        elixir:
+          - "1.14.5"
+          - "1.15.4"
+        otp:
+          - "23.3"
+          - "24.3"
+          - "25.3"
+          - "26.0"
+        exclude:
+          - elixir: "1.14.5"
+            otp: "26.0"
+          - elixir: "1.15.4"
+            otp: "23.3"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+      - name: Restore deps
+        uses: actions/cache@v3
+        with:
+          path: deps
+          key: deps-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+      - name: Restore _build
+        uses: actions/cache@v3
+        with:
+          path: _build
+          key: _build-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+      - name: Get dependencies
+        run: mix deps.get
+      - name: Compile dependencies
+        run: mix deps.compile
+      - name: Build site
+        run: mix serum.build
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          # Upload entire repository
+          path: "./site/"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
