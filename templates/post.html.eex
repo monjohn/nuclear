@@ -1,11 +1,14 @@
 <h1><%= @page.title %></h1>
-<p>Posted on <%= @page.date %> by <%= @site.author %></p>
-<%= unless Enum.empty?(@page.tags) do %>
-  <p>Tags:</p>
-  <ul>
-    <%= for t <- @page.tags do %>
-      <li><a href="<%= t.list_url %>"><%= t.name %></a></li>
-    <% end %>
-  </ul>
-<% end %>
+<div style="display: flex; justify-content: space-between;">
+  <span style="font-weight: 300;"><%= String.upcase(@page.date) %></span>
+  <!-- by <%= @site.author %></span> -->
+  <%= unless Enum.empty?(@page.tags) do %>
+    <div style="display: flex; gap: 1rem;">
+      <span>Tags: </span>
+        <%= for t <- @page.tags do %>
+          <a href="<%= t.list_url %>"><%= t.name %></a>
+        <% end %>
+    </div>
+  <% end %>
+  </div>
 <%= @contents %>

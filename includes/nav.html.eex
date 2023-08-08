@@ -1,4 +1,7 @@
 <nav>
   <a href="<%= page "index" %>">Home</a>
+  |
   <a href="<%= base "posts" %>">Posts</a>
+  |
+  <a href="mailto:ncfornuclearenergy@gmail.com">Contact</a>
 <nav>

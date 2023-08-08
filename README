@@ -1,0 +1,7 @@
+# Mix Tasks
+- mix serum.gen.page 
+- mix serum.gen.post 
+
+# To Deploy
+1. `mix serum.build`
+2. `git push`

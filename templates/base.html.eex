@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="/assets/css/styles.css">
   </head>
-  <body style="margin: 0; padding; 0;">
+  <body >
     <header style="display: flex;">
       <div style="display: flex; justify-content: space-between; width: 66%; margin: 0 auto; align-items: center">
         <div style="">
