@@ -1,0 +1,7 @@
+<%= for post <- @all_posts do %>
+  <div class="post-list-item">
+    <h3><%= post.title%></h3>
+    <p><%= post.extras["preview"]%> </p>
+  </div>
+
+<% end %>
